@@ -512,7 +512,7 @@ static inline void __operationCheck(JRDBChain *self) {
     if (_limitIn.start < 0 || _limitIn.length < 0) {
         return nil;
     }
-    return [NSString stringWithFormat:@" limit %lld,%lld ", _limitIn.start, _limitIn.length];
+    return [NSString stringWithFormat:@" limit %zd,%zd ", _limitIn.start, _limitIn.length];
 }
 
 - (NSArray<NSString *> *)selectColumns {
@@ -555,12 +555,12 @@ static inline void __operationCheck(JRDBChain *self) {
 }
 
 - (id)jr_executeCustomizedQueryChain {
-    return
-    [_db jr_executeSync:self.isSync block:^id _Nullable(id<JRPersistentHandler>  _Nonnull handler) {
+    return [_db jr_executeSync:self.isSync block:^id _Nullable(id<JRPersistentBaseHandler>  _Nonnull handler) {
         FMResultSet *resultSet = [handler jr_executeQuery:self.querySql];
         id result = [JRFMDBResultSetHandler handleResultSet:resultSet forChain:self];
         return result;
     }];
+
 }
 
 - (BOOL)jr_executeUpdateChain {
