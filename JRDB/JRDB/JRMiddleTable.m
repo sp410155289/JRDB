@@ -106,9 +106,7 @@
 
 - (BOOL)cleanRubbishData {
     //delete from Person_money_mid_table where (person_ids not in (select _id from Person)) or (money_ids not in (select _id from Money))
-    return
-    
-    [_db jr_inTransaction:^(FMDatabase * _Nonnull db, BOOL * _Nonnull rollBack) {
+    return [_db jr_inTransaction:^(id<JRPersistentBaseHandler>  _Nonnull handler, BOOL * _Nonnull rollBack) {
         NSString *sql =
         [NSString stringWithFormat:@"delete from %@ where (%@ not in (select %@ from %@)) or (%@ not in (select %@ from %@))"
          , [self tableName]
@@ -119,8 +117,9 @@
          , DBIDKey
          , [_clazz2 jr_tableName]];
         
-        *rollBack = ![db executeUpdate:sql];
+        *rollBack = ![handler jr_executeUpdate:sql params:nil];
     }];
+
     
 }
 
